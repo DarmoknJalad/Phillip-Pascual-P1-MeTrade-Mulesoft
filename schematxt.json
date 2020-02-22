@@ -1,0 +1,118 @@
+ {
+   "definitions": {},
+   "$schema": "http://json-schema.org/draft-07/schema#",
+   "$id": "http://example.com/root.json",
+   "type": "object",
+   "title": "The Root Schema",
+   "required": [
+     "Meta Data",
+     "Time Series (5min)"
+   ],
+   "properties": {
+     "Meta Data": {
+       "$id": "#/properties/Meta Data",
+       "type": "object",
+       "title": "The Meta data Schema",
+       "required": [
+         "1. Information",
+         "2. Symbol",
+         "3. Last Refreshed",
+         "4. Interval",
+         "5. Output Size",
+         "6. Time Zone"
+       ]
+	   },
+       "properties": {
+         "1. Information": {
+           "$id": "#/properties/Meta Data/properties/1. Information",
+           "type": "string",
+           "title": "The 1. information Schema",
+           "default": "",
+           "examples": [
+             "Intraday (5min) open, high, low, close prices and volume"
+           ],
+           "pattern": "^(.*)$"
+         },
+         "2. Symbol": {
+           "$id": "#/properties/Meta Data/properties/2. Symbol",
+           "type": "string",
+           "title": "The 2. symbol Schema",
+           "default": "",
+           "examples": [
+             "msft"
+           ],
+           "pattern": "^(.*)$"
+         },
+         "3. Last Refreshed": {
+           "$id": "#/properties/Meta Data/properties/3. Last Refreshed",
+           "type": "string",
+           "title": "The 3. last refreshed Schema",
+           "default": "",
+           "examples": [
+             "2020-02-21 16:00:00"
+           ],
+           "pattern": "^(.*)$"
+         },
+         "4. Interval": {
+           "$id": "#/properties/Meta Data/properties/4. Interval",
+           "type": "string",
+           "title": "The 4. interval Schema",
+           "default": "",
+           "examples": [
+             "5min"
+           ],
+           "pattern": "^(.*)$"
+         },
+         "5. Output Size": {
+           "$id": "#/properties/Meta Data/properties/5. Output Size",
+           "type": "string",
+           "title": "The 5. output size Schema",
+           "default": "",
+           "examples": [
+             "Compact"
+           ],
+           "pattern": "^(.*)$"
+         },
+         "6. Time Zone": {
+           "$id": "#/properties/Meta Data/properties/6. Time Zone",
+           "type": "string",
+           "title": "The 6. time zone Schema",
+           "default": "",
+           "examples": [
+             "US/Eastern"
+           ],
+           "pattern": "^(.*)$"
+         }
+       
+    },
+     "Time Series (5min)": {
+       "$id": "#/properties/Time Series (5min)",
+       "type": "object",
+       "title": "The Time series (5min) Schema",
+       "required": [
+       ],
+	"properties": {
+	   "timeStampArray": {
+	   "$id": "properties/Time Series (5min)/timeStampArray",
+	   "type": "array",
+	   "title": "timeStampArraySchema",
+	   "items": {
+           "$id": "#/properties/Time Series (5min)/properties/timeStampArray/items",
+           "type": "object",
+           "title": "The 2020-02-21 16:00:00 Schema",
+           "required": [
+             "1. open",
+             "2. high",
+             "3. low",
+             "4. close",
+             "5. volume"
+           ],
+           }
+         },
+               "pattern": "^(.*)$"
+         }
+		 }
+		 }
+		 }
+
+

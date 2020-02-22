@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="StockPriceSoapListener" doc:name="HTTP Listener config" doc:id="199bf378-f911-4bad-9645-3b6117995cfd" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<wsc:config name="StockPriceSoap" doc:name="Web Service Consumer Config" doc:id="33cc00c9-2d34-4459-8e90-d57276b93653" >
+		<wsc:connection wsdlLocation="http://localhost:8090/stockpriceservice?wsdl" service="StockPriceWSService" port="StockPriceWSPort" address="http://localhost:8090/stockpriceservice" >
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+		</wsc:connection>
+	</wsc:config>
+	<http:listener-config name="StockPriceServletListener" doc:name="HTTP Listener config" doc:id="7058d198-de3e-47b1-9be0-f3e796f22454" >
+		<http:listener-connection host="0.0.0.0" port="8083" />
+	</http:listener-config>
+	<flow name="SOAPtoAlphaVantageFlow" doc:id="468c137a-1335-4b42-a385-d2acd985042b" >
+		<http:listener doc:name="SoapListener" doc:id="1f15f223-f766-4fef-8f98-e2b1cd897e0f" config-ref="StockPriceSoapListener" path="stockpriceservice/"/>
+		<set-variable value="#[message.attributes.queryParams.ticker]" doc:name="Set Variable" doc:id="1a33c797-1825-46db-be6a-24efbe3fbf28" variableName="ticker"/>
+		<http:request method="GET" doc:name="Request" doc:id="a920af82-f092-4b60-9878-a92a745454f0" url="https://www.alphavantage.co/query">
+			<http:query-params ><![CDATA[#[output application/java
+---
+{
+	function:"TIME_SERIES_INTRADAY",
+	symbol:vars.ticker,
+	interval:"5min",
+	outputsize:"compact",
+	apikey:"CTT7YELSGMWZLGAK"
+}]]]></http:query-params>
+		</http:request>
+		<set-payload value="#[payload]" doc:name="Set Payload" doc:id="dcd1fe2f-ebc6-41a4-8521-55990bd989aa" />
+		<logger level="INFO" doc:name="Logger" doc:id="76c5b11d-eeca-48b3-b631-9c42d9c53845" message="#[payload]"/>
+	</flow>
+	<flow name="metrademuleFlow" doc:id="a5db24e0-33d0-4ca4-b07f-e24e8b3ee65b" >
+		<http:listener doc:name="StockPriceServletListener" doc:id="f5924f10-be75-498d-bbd9-52edfbdf43d6" config-ref="StockPriceServletListener" path="/stockprice"/>
+		<set-variable value="#[message.attributes.queryParams.tickerSymbol]" doc:name="Set Variable" doc:id="81100903-0ca2-492a-98de-c0343c519eee" variableName="tickerSymbol"/>
+		<wsc:consume doc:name="StockPriceSoapConsumer" doc:id="773ad09e-8f5e-401e-b4ec-4aed6194ef72" config-ref="StockPriceSoap" operation="getStockPrice">
+			<wsc:message>
+				<wsc:body ><![CDATA[#[%dw 2.0
+output text/xml
+ns ns0 http://service.phillippascual.com/
+---
+{
+	ns0#getStockPrice: {
+		arg0: vars.tickerSymbol
+	}
+}]]]></wsc:body>
+			</wsc:message>
+		</wsc:consume>
+		<ee:transform doc:name="Transform Message" doc:id="b3380965-4e7b-4a6c-bd8b-69ffc6af5b96" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+ns ns0 http://service.phillippascual.com/
+---
+payload.body.ns0#getStockPriceResponse.return]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
