@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="metrademule-test-suite.xml" />
+	<munit:test name="metrademule-test-suite-SOAPtoAlphaVantageFlowTest" doc:id="a8e9f341-7075-4d83-a480-084348e3081d" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to SOAPtoAlphaVantageFlow" doc:id="a338c923-920a-4819-b069-9ab1f07ee078" name="SOAPtoAlphaVantageFlow"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="metrademule-test-suite-metrademuleFlowTest" doc:id="6f69aea7-dd97-45f3-b415-94f3472d1146" description="Test">
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to metrademuleFlow" doc:id="9867b5cc-6d54-4fcb-a2b8-840268500da3" name="metrademuleFlow"/>
+		</munit:execution>
+	</munit:test>
+
+
+</mule>
