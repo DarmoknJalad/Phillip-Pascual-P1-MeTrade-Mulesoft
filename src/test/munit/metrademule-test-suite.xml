@@ -1,22 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xsi:schemaLocation="
+<mule xmlns:sockets="http://www.mulesoft.org/schema/mule/sockets"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:munit="http://www.mulesoft.org/schema/mule/munit"
+	xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xsi:schemaLocation="
 		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
-		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd
+http://www.mulesoft.org/schema/mule/sockets http://www.mulesoft.org/schema/mule/sockets/current/mule-sockets.xsd">
 	<munit:config name="metrademule-test-suite.xml" />
 	<munit:test name="metrademule-test-suite-SOAPtoAlphaVantageFlowTest" doc:id="a8e9f341-7075-4d83-a480-084348e3081d" description="Test">
+		<munit:behavior>
+			<munit:set-event doc:name="Set Event" doc:id="0372875b-43ca-48d1-ae35-3625d37a6f4c" >
+				<munit:attributes value="#[{queryParams: {ticker: 'MSFT'}}]" />
+			</munit:set-event>
+		</munit:behavior>
 		<munit:execution >
 			<flow-ref doc:name="Flow-ref to SOAPtoAlphaVantageFlow" doc:id="a338c923-920a-4819-b069-9ab1f07ee078" name="SOAPtoAlphaVantageFlow"/>
 		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Logger" doc:id="a6a6da67-1ed9-4a89-9c1d-a7838bfcf307" />
+			<munit-tools:assert-equals doc:name="Assert equals" doc:id="e849a923-d9ff-45db-bf3c-132ecd99d203" actual="#[message.attributes.statusCode]" expected="#[200]"/>
+		</munit:validation>
 	</munit:test>
 	<munit:test name="metrademule-test-suite-metrademuleFlowTest" doc:id="6f69aea7-dd97-45f3-b415-94f3472d1146" description="Test">
+		<munit:behavior>
+			<munit:set-event doc:name="Set Event" doc:id="a364f3cf-ceea-4f21-9819-1ac4da407e1f" >
+				<munit:attributes value="#[{queryParams: {tickerSymbol: 'MSFT'}}]" />
+			</munit:set-event>
+		</munit:behavior>
 		<munit:execution >
 			<flow-ref doc:name="Flow-ref to metrademuleFlow" doc:id="9867b5cc-6d54-4fcb-a2b8-840268500da3" name="metrademuleFlow"/>
 		</munit:execution>
+		<munit:validation >
+			<logger level="INFO" doc:name="Logger" doc:id="09982f74-4a2f-4120-828c-dad45a5d5de6" />
+			<munit-tools:assert-that doc:name="Assert that" doc:id="bc800a7a-4878-4834-9a50-6cff61915c95" expression="#[payload]" is="#[MunitTools::notNullValue()]"/>
+		</munit:validation>
 	</munit:test>
 
 
